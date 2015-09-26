@@ -51,6 +51,7 @@ void setup() {
  digitalWrite(OEPin, LOW);
 
 pinMode (11, OUTPUT);  // OE
+
 digitalWrite(11, LOW);  
   
   Serial.begin(9600);
