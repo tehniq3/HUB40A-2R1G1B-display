@@ -20,7 +20,7 @@ int dataPin6 = 7;   // 2B colour
 int OEPin = 11;  //  OE = Output enable terminal
 //When OE (active) low, the output drivers are enabled;
 //when OE high, all output drivers are turned OFF (blanked). 
-
+// see MBI5026 datasheet: http://www.vabolis.lt/stuff/MBI5026.pdf
 
 //holders for infromation you're going to pass to shifting function
 byte data, data2;
