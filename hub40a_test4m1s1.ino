@@ -876,7 +876,7 @@ baza3[32*x+y+l+l2+l3+l4]=sapte[l5*x+y];
 }
 }
 // if is 8
-if (te2 == 8) {
+if (te3 == 8) {
 for (byte x=0; x<=7; x++)  {  
 for (byte y=0; y<l2; y++)  {  
 baza3[32*x+y+l+l2+l3+l4]=opt[l5*x+y];
