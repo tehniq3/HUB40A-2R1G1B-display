@@ -1,6 +1,6 @@
 /*
   use Shift Register Example - https://www.arduino.cc/en/Tutorial/ShftOut13
-  sketch version 4m1s1 - 01.10.2015, Craiova - Romania
+  sketch version 4m1u - 01.10.2015, Craiova - Romania
   for 2 display P20F04D-12L with HUB40A connector
   original sketch by niq_ro from http://www.tehnic.go.ro
   http://nicuflorica.blogspot.ro/
@@ -36,7 +36,7 @@ int spid2 = 2000; // time between texts
 DHT dht(DHTPIN, DHTTYPE);
 
 
-// MATRIX DATA 16/8
+// MATRIX DATA 512 = 32x8
 byte baza3[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -45,6 +45,16 @@ byte baza3[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+byte baza[] = {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               1,1,0,0,1,0,1,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,1,1,0,0,0,1,0,
+               1,0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,
+               1,0,1,0,1,0,1,0,0,0,0,1,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,0,0,1,0,1,
+               1,1,0,0,0,1,1,0,0,0,0,1,0,1,0,1,0,0,1,1,0,1,1,1,0,1,0,0,0,0,1,0,
+               0,0,0,0,0,0,1,0,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0};
+
 
 byte numar[] = {0,0,0,0,0,0,
                0,0,0,0,0,0,
@@ -247,6 +257,17 @@ pinMode (11, OUTPUT);  // OE
 digitalWrite(11, LOW);  
 
 clearAll_2Bytes(4,512); 
+conversie();
+for (int j = 0; j < 8; j++) {
+    digitalWrite(latchPin, 0);
+ shiftOut41(2, 5, 2, 5, 2, 5, clockPin, dataArray[4*j], dataArray[4*j+2]);
+    digitalWrite(latchPin, 1);
+    digitalWrite(latchPin, 0);
+ shiftOut42(2, 5, 2, 5, 2, 5, clockPin, dataArray[4*j+1], dataArray[4*j+3]);
+    digitalWrite(latchPin, 1);
+    delay(spid);
+  }
+delay(5000);
 }
 
 
@@ -256,9 +277,9 @@ for (byte n = 2; n <= 4; n++) {
 for (byte m = 2; m <= 4; m++) {    
 for (byte l = 2; l <= 4; l++) {  
 clearAll_2Bytes(4,512); 
-// conversie();
 float ti = dht.readTemperature();
-delay(1000);
+//float ti = 87.8;
+//delay(1000);
 temperatura(ti);
 
   for (int j = 0; j < 8; j++) {
@@ -272,9 +293,10 @@ temperatura(ti);
   }
 delay(spid2);
 clearAll_2Bytes(2,512); 
+
  
 int h = dht.readHumidity();
-delay(1000);
+//delay(1000);
 umiditate(h);
 for (int j = 0; j < 8; j++) {
     digitalWrite(latchPin, 0);
@@ -286,7 +308,6 @@ for (int j = 0; j < 8; j++) {
     delay(spid);
   }
 delay(spid2);
-//  clearAll_2Bytes(2,500); 
 }
 }
 }
@@ -523,8 +544,6 @@ void shiftOut42(int myDataPin1, int myDataPin2, int myDataPin3, int myDataPin4, 
     else {  
       pinState2 = 0;
     }
-
-
     //Sets the pin to HIGH or LOW depending on pinState
     digitalWrite(myDataPin1, pinState1);
     digitalWrite(myDataPin3, pinState1);
@@ -547,6 +566,15 @@ void shiftOut42(int myDataPin1, int myDataPin2, int myDataPin3, int myDataPin4, 
   //stop shifting
   digitalWrite(myClockPin, 0);
 }
+
+void conversie(){
+for (byte x=0; x<=3; x++)  {
+  for (byte y=0; y<=7; y++)  {
+dataArray[x+4*y] = 128*baza[32*2*x+4*y] + 64*baza[32*2*x+1+4*y] + 32*baza[32*2*x+2+4*y] + 16*baza[32*2*x+3+4*y] + 8*baza[32*(2*x+1)+4*y] + 4*baza[32*(2*x+1)+1+4*y] + 2*baza[32*(2*x+1)+2+4*y] + baza[32*(2*x+1)+3+4*y]; 
+}
+}
+}
+
 
 void temperatura(float te){
 // clear matrix;
